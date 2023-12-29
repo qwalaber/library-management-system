@@ -1,0 +1,112 @@
+[
+  {
+    "id": 3212,
+    "title": "The Lost Symbol",
+    "genre": "Fiction",
+    "author": "Dan Brown",
+    "language": "English",
+    "publicationDate": "2009-09-15",
+    "coverImage": "book1",
+    "isAvailable": false,
+    "subject": "Thriller"
+  },
+  {
+    "id": 1212,
+    "author": "Harper Lee",
+    "genre": "Fiction",
+    "subject": "Literature",
+    "language": "English",
+    "publicationDate": "1960-07-11",
+    "coverImage": "book2",
+    "title": "To Kill a Mockingbird",
+    "isAvailable": true
+  },
+  {
+    "id": 1312,
+    "author": "Yuval Noah Harari",
+    "genre": "Non-fiction",
+    "subject": "History",
+    "language": "English",
+    "publicationDate": "2011-02-10",
+    "coverImage": "book3",
+    "title": "Sapiens: A Brief History of Humankind",
+    "isAvailable": true
+  },
+  {
+    "id": 1441,
+    "author": "Dan Brown",
+    "title": "The Da Vinci Code",
+    "subject": "Mystery",
+    "language": "English",
+    "publicationDate": "2003-03-18",
+    "coverImage": "book4",
+    "genre": "Fiction",
+    "isAvailable": false
+  },
+  {
+    "id": 4512,
+    "author": "James Clear",
+    "genre": "Non-fiction",
+    "subject": "Self-help",
+    "language": "English",
+    "publicationDate": "2018-10-16",
+    "coverImage": "book5",
+    "title": "Atomic Habits",
+    "isAvailable": true
+  },
+  {
+    "id": 4772,
+    "author": "George Orwell",
+    "genre": "Fiction",
+    "subject": "Horror",
+    "language": "English",
+    "publicationDate": "1949-06-08",
+    "coverImage": "book6",
+    "title": "1984",
+    "isAvailable": false
+  },
+  {
+    "id": 4515,
+    "author": "Paulo Coelho",
+    "genre": "Fiction",
+    "subject": "Thriller",
+    "language": "English",
+    "publicationDate": "1988-01-01",
+    "coverImage": "book7",
+    "title": "The Alchemist",
+    "isAvailable": false
+  },
+  {
+    "id": 11,
+    "author": "Paulo Coelho",
+    "genre": "Fiction",
+    "subject": "Thriller",
+    "language": "English",
+    "publicationDate": "1988-01-01",
+    "coverImage": "book8",
+    "title": "The Alchemist",
+    "isAvailable": false
+  },
+  {
+    "id": 12,
+    "author": "Paulo Coelho",
+    "genre": "Fiction",
+    "subject": "Thriller",
+    "language": "English",
+    "publicationDate": "1988-01-01",
+    "coverImage": "book9",
+    "title": "The Alchemist",
+    "isAvailable": false
+  },
+  {
+    "id": 13,
+    "author": "Paulo Coelho",
+    "genre": "Fiction",
+    "subject": "Thriller",
+    "language": "English",
+    "publicationDate": "1988-01-01",
+    "coverImage": "book10",
+    "title": "The Alchemist",
+    "isAvailable": false
+  }
+]

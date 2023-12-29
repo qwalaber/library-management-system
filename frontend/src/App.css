@@ -1,0 +1,230 @@
+.navbar, .footer {
+    background: linear-gradient(to right, #c3d6d1, rgb(203, 218, 213), #d0e4e0, #cfdedd);
+    height: 100vh;
+}
+
+.row {
+    padding: 40px 20px;
+}
+
+input::placeholder, .filters {
+    color: rgb(78, 74, 74);
+}
+
+@media (min-width: 576px) {
+    .row {
+        padding: 100px 0;
+    }
+    .description-text {
+        font-size: 24px;
+    }
+}
+
+.ReactModal__Content--after-open {
+    border-radius: 25px!important;
+    border: rgb(184, 195, 187) 1px solid!important;
+    background-color: rgb(222, 232, 232)!important;
+}
+
+/* Navbar */
+
+.org-name {
+    font-family: 'Cairo Play', sans-serif;
+    font-size: 20px;
+    font-weight: 900;
+}
+
+
+a.active {
+    color: #1d4f43;
+    font-weight: 700;
+}
+
+a {
+    color: black!important;
+    text-decoration: none!important;
+}
+
+.nav-item[disabled] {
+    pointer-events: none;
+    opacity: 0.7;
+  }
+
+.toggle-mob-nav-height {
+    height: 50px;
+}
+
+.hide-item {
+    display: none;
+}
+
+.show-item {
+    display: block;
+}
+
+@media (min-width: 576px) {
+    .navbar {
+      height: 50px;
+    }
+
+    .logo {
+        position: absolute;
+        left: 10px;
+    }
+    
+    .mob-maxi-nav-item {
+        display: none;
+    }
+    
+    .des-item {
+        display: block!important;
+    }
+
+    .profile-buffer {
+        position: absolute;
+        right: 10px;
+    }
+}
+
+/* Home */
+
+@keyframes moveFromRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.site-heading {
+    animation: moveFromRight 0.5s ease-out;
+}
+
+.banner-image-wrapper {
+    width: 100%;
+}
+
+.banner-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.description-image {
+    height: 120px;
+    border: 10px solid transparent;
+    transition: height 0.5s ease;
+}
+
+.description-image:hover {
+    border: 0px solid transparent;
+    height: 120px;
+}
+
+@media (min-width: 576px) {
+    .banner-image {
+        height: 670px!important;
+    }
+    .description-image {
+        height: 130px;
+        border: 10px solid transparent;
+        transition: height 0.5s ease;
+    }
+    
+    .description-image:hover {
+        border: 0px solid transparent;
+        height: 140px;
+    }
+}
+
+/* Books */
+
+.books-page {
+    background: linear-gradient(to right, #dfe6e4, rgb(222, 228, 226), #dee6e4, #dfe5e4);
+}
+
+.user-book:hover {
+    cursor: pointer;
+} 
+
+.tooltip-style {
+    z-index: 1000;
+    color: black!important;
+    background-color: #e7e7d8!important;
+    border: #a5a595 1px solid;
+    border-radius: 8px;
+}
+
+.tooltip-button {
+    border-radius: 50px!important;
+}
+
+.tooltip-button:hover {
+    background-color: green!important;
+    color: white!important;
+}
+
+/* Create Book */
+
+#create-title-input, #create-author-input, #create-language-input, #create-genre-input, #create-publication-date-input, #create-image-path-input, #create-subject-input,
+
+/* Book */
+
+#update-title-input, #update-id-input, #update-author-input, #update-language-input, #update-genre-input, #update-publication-date-input, #update-image-path-input, #update-subject-input, #update-book-user-email-input,
+
+/* Register */
+
+#register-name-input, #register-email-input, #register-gender-input, #register-address-input, #register-password-input, #register-birthdate-input,
+
+/* User */
+
+#update-name-input, #update-address-input, #update-birthdate-input, #update-gender-input, #update-email-input {
+    width: 100%;
+}
+
+/* Log In */
+
+.login-form-wrapper {
+    background: linear-gradient(to right, #d8e1de, rgb(199, 215, 211), #cbd8d4, #cee0dd);
+}
+
+.sign-up-prompt:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+@media (min-width: 576px) {
+    .login-form-wrapper {
+        margin: 0 400px;
+    }
+
+    .login-form-width {
+        width: 50vw!important;
+    }
+}
+
+@media (min-width: 992px) {
+    .login-form-width {
+        width: 30vw!important;
+    }
+}
+
+/* Manage Page */
+.manage-page {
+    background: linear-gradient(to right, #dfe6e4, rgb(222, 228, 226), #dee6e4, #dfe5e4);
+}
+
+/* Activity Page */
+
+.activity-page {
+    background: linear-gradient(to right, #dfe6e4, rgb(222, 228, 226), #dee6e4, #dfe5e4);
+}
+
+/* Footer */
+
+  .footer {
+    height: 50px;
+  }
