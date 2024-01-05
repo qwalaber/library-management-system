@@ -41,7 +41,7 @@ const UserPage = () => {
 
     return(<div className="user-page">
         <div className="container">
-            <div className="row">
+            <div className="row" data-masonry='{"percentPosition": true }'>
                 <h3 className="text-center text-muted">Hi, {user.email}</h3>
                 <h6 className="mt-4">Current Books</h6>
                 { activeTransactions.map(transaction=>{

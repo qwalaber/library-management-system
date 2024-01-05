@@ -32,7 +32,6 @@ public class TransactionDao {
         transaction.setBorrowDate(rs.getDate("borrow_date"));
         transaction.setDueDate(rs.getDate("due_date"));
         transaction.setReturnDate(rs.getDate("return_date"));
-        transaction.setReturned(rs.getBoolean("is_returned"));
         transaction.setRenewed(rs.getBoolean("is_renewed"));
         transaction.setOverdueDays(rs.getInt("overdue_days"));
 
@@ -70,7 +69,7 @@ public class TransactionDao {
     }
 
     public Transaction saveTransaction(Transaction transaction) {
-        String sql = "INSERT INTO transaction (user_id, book_id, borrow_date, due_date, return_date, is_returned, is_renewed, overdue_days) " +
+        String sql = "INSERT INTO transaction (user_id, book_id, borrow_date, due_date, return_date, is_renewed, overdue_days) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql,
                 transaction.getUser().getUserId(),
@@ -78,7 +77,6 @@ public class TransactionDao {
                 transaction.getBorrowDate(),
                 transaction.getDueDate(),
                 transaction.getReturnDate(),
-                transaction.getReturned(),
                 transaction.getRenewed(),
                 transaction.getOverdueDays());
         return transaction;
@@ -93,7 +91,7 @@ public class TransactionDao {
     public Transaction updateTransaction(int transactionId, Transaction updatedTransaction) {
         if (doesTransactionExist(transactionId)) {
             String sql = "UPDATE transactions SET user_id = ?, book_id = ?, borrow_date = ?, due_date = ?, " +
-                    "return_date = ?, is_returned = ?, is_renewed = ?, overdue_days = ? " +
+                    "return_date = ?, is_renewed = ?, overdue_days = ? " +
                     "WHERE transaction_id = ?";
             jdbcTemplate.update(sql,
                     updatedTransaction.getUser().getUserId(),
@@ -101,7 +99,6 @@ public class TransactionDao {
                     updatedTransaction.getBorrowDate(),
                     updatedTransaction.getDueDate(),
                     updatedTransaction.getReturnDate(),
-                    updatedTransaction.getReturned(),
                     updatedTransaction.getRenewed(),
                     updatedTransaction.getOverdueDays(),
                     transactionId);

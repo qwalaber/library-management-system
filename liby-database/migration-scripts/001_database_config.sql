@@ -49,7 +49,6 @@ CREATE TABLE Transactions (
     due_date DATE AS (DATE_ADD(borrow_date, INTERVAL 14 DAY)) NOT NULL,
     return_date DATE DEFAULT NULL,
     is_renewed BOOLEAN NOT NULL DEFAULT FALSE,
-    is_returned BOOLEAN NOT NULL DEFAULT FALSE,
     return_librarian_id INT DEFAULT NULL,
     FOREIGN KEY (user_id) REFERENCES Users(user_id),
     FOREIGN KEY (book_id) REFERENCES Books(book_id),

@@ -8,6 +8,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
@@ -43,25 +44,34 @@ public class UserDao {
 
     public List<User> getAllUsersWithTransactions() {
         String sql = "SELECT u.user_id, u.name, u.email, u.password, u.gender, u.address, " +
-                "u.birthdate, u.borrows_left, u.membership_date " +
-                "FROM users u";
-        List<User> users = jdbcTemplate.query(sql, this::mapRowToUser);
-        for (User user : users) {
-            List<Transaction> transactions = getTransactionsForUser(user.getUserId());
-            user.setTransactions(transactions);
-        }
+                "u.birthdate, u.borrows_left, u.membership_date, " +
+                "MIN(CASE WHEN t.return_date IS NULL THEN t.due_date ELSE NULL END) as earliest_active_due_date, " +
+                "MIN(t.due_date) as earliest_due_date " +
+                "FROM users u LEFT JOIN transactions t ON u.user_id = t.user_id " +
+                "GROUP BY u.user_id, u.name, u.email, u.password, u.gender, u.address, u.birthdate, u.borrows_left, u.membership_date " +
+                "ORDER BY CASE WHEN earliest_active_due_date IS NULL THEN 1 ELSE 0 END, earliest_active_due_date ASC, earliest_due_date ASC";
+        List<User> users = jdbcTemplate.query(sql, new RowMapper<User>() {
+            @Override
+            public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+                User user = mapRowToUser(rs, rowNum);
+                List<Transaction> transactions = getTransactionsForUser(user.getUserId());
+                user.setTransactions(transactions);
+                return user;
+            }
+        });
         return users;
     }
 
     private List<Transaction> getTransactionsForUser(int userId) {
         String sql = "SELECT t.transaction_id, t.borrow_date, t.due_date, " +
-                "t.return_date, t.is_returned, t.is_renewed, t.overdue_days, " +
+                "t.return_date, t.is_renewed, t.overdue_days, " +
                 "b.book_id, b.title, b.author, b.genre, b.subject, b.language, " +
                 "b.publication_date, b.image_name, b.is_available, " +
                 "b.total_borrows, b.borrows_thirty_days " +
                 "FROM transactions t " +
                 "INNER JOIN books b ON t.book_id = b.book_id " +
-                "WHERE t.user_id = ?";
+                "WHERE t.user_id = ? " +
+                "ORDER BY due_date ASC";
 
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             Transaction transaction = new Transaction();
@@ -77,13 +87,11 @@ public class UserDao {
             book.setIsAvailable(rs.getBoolean("is_available"));
             book.setTotalBorrows(rs.getInt("total_borrows"));
             book.setBorrowsThirtyDays(rs.getInt("borrows_thirty_days"));
-
             transaction.setBook(book);
             transaction.setTransactionId(rs.getInt("transaction_id"));
             transaction.setBorrowDate(rs.getDate("borrow_date"));
             transaction.setDueDate(rs.getDate("due_date"));
             transaction.setReturnDate(rs.getDate("return_date"));
-            transaction.setReturned(rs.getBoolean("is_returned"));
             transaction.setRenewed(rs.getBoolean("is_renewed"));
             transaction.setOverdueDays(rs.getInt("overdue_days"));
             return transaction;

@@ -1,7 +1,6 @@
 @import '~bootstrap/scss/bootstrap';
 
-// App
-
+/* Navbar and Footer */
 .navbar, .footer {
   background: linear-gradient(to right, #c3d6d1, rgb(203, 218, 213), #d0e4e0, #cfdedd);
   height: 100vh;
@@ -15,6 +14,17 @@ input::placeholder, .filters {
   .description-text {
       font-size: 24px;
   }
+}
+
+/* Masonry */
+
+.my-masonry-grid {
+  margin-left: -1%;
+  max-width: 101% !important;
+  width: 101% !important;
+}
+.my-masonry-grid_column {
+  padding-left: 1%; 
 }
 
 /* Modal */
@@ -191,10 +201,6 @@ a {
   // border-radius: 18px!important;
 }
 
-.user-book:hover {
-  cursor: pointer;
-} 
-
 .m-tooltip-style {
   z-index: 1000;
   color: black!important;
@@ -267,8 +273,33 @@ a {
 }
 
 /* Manage Page */
-.manage-page {
-  background: linear-gradient(to right, #dfe6e4, rgb(222, 228, 226), #dee6e4, #dfe5e4);
+
+.manage-searchbar::placeholder {
+  color: white !important;
+}
+
+.manage-searchbar-icon {
+  color: white !important;
+}
+
+.manage-user-details {
+  font-size: 13px;
+}
+
+.manage-user-book-title {
+  font-size: 12px;
+}
+
+.manage-user-book:hover {
+  cursor: pointer;
+} 
+
+.manage-book-card {
+  height: 60px !important;
+}
+
+.manage-user-book-comments {
+  font-size: 13px;
 }
 
 @media (min-width: 576px) {

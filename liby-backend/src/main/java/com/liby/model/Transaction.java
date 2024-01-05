@@ -23,8 +23,6 @@ public class Transaction {
     private Date dueDate;
     @Column(name = "return_date")
     private Date returnDate;
-    @Column(name = "is_returned")
-    private boolean isReturned;
     @Column(name = "is_renewed")
     private boolean isRenewed;
     @Column(name = "overdue_days")
@@ -34,7 +32,7 @@ public class Transaction {
         return transactionId;
     }
 
-    public void setTransactionId(int borrowId) {
+    public void setTransactionId(int transactionId) {
         this.transactionId = transactionId;
     }
 
@@ -76,14 +74,6 @@ public class Transaction {
 
     public void setReturnDate(Date returnDate) {
         this.returnDate = returnDate;
-    }
-    
-    public boolean getReturned() {
-        return isReturned;
-    }
-
-    public void setReturned(boolean returned) {
-        this.isReturned = returned;
     }
     
     public boolean getRenewed() {
