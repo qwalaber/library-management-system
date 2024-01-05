@@ -7,7 +7,7 @@ import AuthProvider from './contexts/AuthContext';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/css/all.css';
-import './assets/styles/custom.scss';
+import './assets/custom.scss';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
