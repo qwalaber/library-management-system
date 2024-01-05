@@ -113,7 +113,7 @@ const BookUpdateModal = ( { isUpdateMode, setIsUpdateMode, book, endpoint } ) =>
                         </p>
                     </div>
                 </div>
-                <button className="btn btn-success me-1 mt-4" onClick={e=>handleUpdate(e)}>Save</button>
+                <button className="btn btn-success me-1 mt-4 text-white" onClick={e=>handleUpdate(e)}>Save</button>
                 <button className="btn btn-danger mt-4" onClick={e=>deleteBook(e)}>
                     <i className="fa-solid fa-trash"></i>
                 </button>

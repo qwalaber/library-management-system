@@ -73,7 +73,7 @@ const UserUpdateModal = ( { isUpdateMode, setIsUpdateMode, user } ) => {
                         </p>
                     </div>
                 </div>
-                <button className="btn btn-success me-1 mt-5" onClick={e=>handleUpdateUser(e)}>Save</button>
+                <button className="btn btn-success me-1 mt-5 text-white" onClick={e=>handleUpdateUser(e)}>Save</button>
                 <button className="btn btn-danger mt-5" onClick={()=>deleteUser}>
                     <i className="fa-solid fa-trash"></i>
                 </button>
