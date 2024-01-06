@@ -10,7 +10,7 @@ const HomePage = () => {
     const { role } = useContext(AuthContext);
     const menuItems = ["Borrow", "Browse", "Manage"];
 
-    const handleNavigation = inputText => {
+    const handleRedirect = inputText => {
         switch(inputText){
             case "Borrow":
                 if(role==="User") navigate('/books');
@@ -43,7 +43,7 @@ const HomePage = () => {
         <div className="row py-4 mt-2 mt-sm-4 pt-sm-5">
             {menuItems.map(menuItem => 
                 <div className="description col-sm-4 d-flex flex-column align-items-center">
-                    <img src={`images/homepage-${menuItem}.svg`} className="mt-4 mt-sm-0 mb-sm-3 description-image" alt="Bibliophile Image" onClick={()=>handleNavigation(`${menuItem}`)}/>
+                    <img src={`images/homepage-${menuItem}.svg`} className="mt-4 mt-sm-0 mb-sm-3 description-image" alt="Bibliophile Image" onClick={()=>handleRedirect(`${menuItem}`)}/>
                     <h6 className="mt-4 mb-5 description-text">{menuItem}</h6>
                 </div>
             )}
