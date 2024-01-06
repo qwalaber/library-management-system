@@ -37,52 +37,24 @@ const ManagePage = () => {
   }
 
   const searchUsers = searchString => {
-
-  const arr = allUsers.filter(user => {
-    for (let key in user) {
-        if (typeof user[key] === 'string' && user[key].toLowerCase().includes(searchString)) {
-            return true;
-        }
-    }
-    return user.transactions.some(transaction => {
-      if (transaction.returnDate !== null) return false;
-      for (let key in transaction) {
-        let value = transaction[key];
-        if (key === 'book' && value !== null) {
-          for (let subKey in value) {
-            if (typeof value[subKey] === 'string' && value[subKey].toLowerCase().includes(searchString)) return true;
+    const arr = allUsers.filter(user => {
+      for (let key in user) {
+          if (typeof user[key] === 'string' && user[key].toLowerCase().includes(searchString)) return true;
+      }
+      return user.transactions.some(transaction => {
+        if (transaction.returnDate !== null) return false;
+        for (let key in transaction) {
+          let value = transaction[key];
+          if (key === 'book' && value !== null) {
+            for (let subKey in value) {
+              if (typeof value[subKey] === 'string' && value[subKey].toLowerCase().includes(searchString)) return true;
+            }
           }
         }
-      }
-      return false;
+        return false;
+      });
     });
-  });
-  setUsers(arr);
-}
-
-
-  const fetchUserTrasactions = async (userId) => {
-    try {
-      const response = await axios.get(`${endpoint}/transactions/user/${userId}`);
-      console.log("fetched users: ", response.data);
-      return response.data;
-    } catch (error) {
-      console.error('Error in fetchUserTransactions:', error);
-      return [];
-    }
-    // var userTransactions = [];
-    // axios({
-    //   method: "get",
-    //   url: `${endpoint}/transactions/user/${userId}`
-    // })
-    // .then(res => {
-    //     console.log("users in fetchUserTrasactions: ", res.data);
-    //     userTransactions = res.data;
-    // }) 
-    // .catch(err => {
-    //       console.error('Error in fetchUserTrasactions:', err);
-    // });
-    // return userTransactions;
+    setUsers(arr);
   }
 
   const getBorrowComments = ( dueDate, isOverdue ) => {
