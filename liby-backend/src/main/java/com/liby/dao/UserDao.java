@@ -84,7 +84,7 @@ public class UserDao {
             book.setLanguage(rs.getString("language"));
             book.setPublicationDate(rs.getDate("publication_date"));
             book.setImageName(rs.getString("image_name"));
-            book.setIsAvailable(rs.getBoolean("is_available"));
+            book.setAvailability(rs.getBoolean("availability"));
             book.setTotalBorrows(rs.getInt("total_borrows"));
             book.setBorrowsThirtyDays(rs.getInt("borrows_thirty_days"));
             transaction.setBook(book);

@@ -112,42 +112,42 @@ a {
   }
 }
 
-.site-heading {
+.homepage-heading {
   animation: moveFromRight 0.5s ease-out;
 }
 
-.banner-image-wrapper {
+.homepage-banner-wrapper {
   width: 100%;
 }
 
-.banner-image {
+.homepage-banner {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.description-image {
+.homepage-menu-image {
   height: 120px;
   border: 10px solid transparent;
   transition: height 0.5s ease;
 }
 
-.description-image:hover {
+.homepage-menu-image:hover {
   border: 0px solid transparent;
   height: 120px;
 }
 
 @media (min-width: 576px) {
-  .banner-image {
+  .homepage-banner {
       height: 670px!important;
   }
-  .description-image {
+  .homepage-menu-image {
       height: 130px;
       border: 10px solid transparent;
       transition: height 0.5s ease;
   }
   
-  .description-image:hover {
+  .homepage-menu-image:hover {
       border: 0px solid transparent;
       height: 140px;
   }
@@ -184,7 +184,7 @@ a {
 }
 
 .book-image {
-  height: 210px;
+  height: 175px;
 }
 
 .tooltip-borrow {

@@ -20,8 +20,8 @@ public class Book {
     private Date publicationDate;
     @Column(name = "image_name")
     private String imageName;
-    @Column(name = "is_available")
-    private boolean isAvailable;
+    @Column(name = "availability")
+    private boolean availability;
     @Column(name = "total_borrows")
     private int totalBorrows;
     @Column(name = "borrows_thirty_days")
@@ -91,12 +91,12 @@ public class Book {
         this.imageName = imageName;
     }
 
-    public boolean getIsAvailable() {
-        return isAvailable;
+    public boolean getAvailability() {
+        return availability;
     }
 
-    public void setIsAvailable(boolean isAvailable) {
-        this.isAvailable = isAvailable;
+    public void setAvailability(boolean availability) {
+        this.availability = availability;
     }
 
     public int getTotalBorrows() {

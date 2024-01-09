@@ -35,7 +35,7 @@ CREATE TABLE Books (
     language ENUM('English','Tamil','Malay','Chinese','Others') NOT NULL,
     publication_date DATE NOT NULL,
     image_name VARCHAR(255) NOT NULL,
-    is_available BOOLEAN NOT NULL DEFAULT TRUE,
+    availability BOOLEAN NOT NULL DEFAULT TRUE,
     total_borrows INT NOT NULL DEFAULT 0,
     borrows_thirty_days INT NOT NULL DEFAULT 0
 );
@@ -44,11 +44,11 @@ CREATE TABLE Transactions (
     transaction_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
     book_id INT NOT NULL,
-    librarian_id INT NOT NULL,
     borrow_date DATE NOT NULL,
     due_date DATE AS (DATE_ADD(borrow_date, INTERVAL 14 DAY)) NOT NULL,
     return_date DATE DEFAULT NULL,
-    is_renewed BOOLEAN NOT NULL DEFAULT FALSE,
+    renewal BOOLEAN NOT NULL DEFAULT FALSE,
+    librarian_id INT NOT NULL,
     return_librarian_id INT DEFAULT NULL,
     FOREIGN KEY (user_id) REFERENCES Users(user_id),
     FOREIGN KEY (book_id) REFERENCES Books(book_id),

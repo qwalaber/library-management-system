@@ -37,17 +37,6 @@ public class BookController {
         }
     }
 
-    @GetMapping("/subjects")
-    public List<String> getAllSubjects() {
-        try {
-            return bookDao.getAllSubjects();
-        } catch (Exception e) {
-            e.printStackTrace();
-            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to get all subjects");
-            throw new RuntimeException("Failed to fetch subjects", e);
-        }
-    }
-
     @PostMapping("/create")
     public Book createBook(@RequestBody Book book) {
         try {

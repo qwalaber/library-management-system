@@ -28,7 +28,7 @@ public class BookDao {
         book.setLanguage(rs.getString("language"));
         book.setPublicationDate(rs.getDate("publication_date"));
         book.setImageName(rs.getString("image_name"));
-        book.setIsAvailable(rs.getBoolean("is_available"));
+        book.setAvailability(rs.getBoolean("availability"));
         book.setTotalBorrows(rs.getInt("total_borrows"));
         book.setBorrowsThirtyDays(rs.getInt("borrows_thirty_days"));
         return book;
@@ -63,7 +63,7 @@ public class BookDao {
     public Book updateBook(int bookId, Book updatedBook) {
         if(doesBookExist(bookId)){
             String sql = "UPDATE books SET title = ?, author = ?, genre = ?, subject = ?, language = ?, " +
-                    "publication_date = ?, image_name = ?, is_available = ?, total_borrows = ?, borrows_thirty_days = ? " +
+                    "publication_date = ?, image_name = ?, availability = ?, total_borrows = ?, borrows_thirty_days = ? " +
                     "WHERE book_id = ?";
             jdbcTemplate.update(sql,
                     updatedBook.getTitle(),
@@ -73,7 +73,7 @@ public class BookDao {
                     updatedBook.getLanguage(),
                     updatedBook.getPublicationDate(),
                     updatedBook.getImageName(),
-                    updatedBook.getIsAvailable(),
+                    updatedBook.getAvailability(),
                     updatedBook.getTotalBorrows(),
                     updatedBook.getBorrowsThirtyDays(),
                     bookId);
@@ -90,10 +90,5 @@ public class BookDao {
         } else {
             ResponseEntity.status(HttpStatus.NOT_FOUND).body("Book not found");
         }
-    }
-
-    public List<String> getAllSubjects() {
-        String sql = "SELECT DISTINCT subject FROM books";
-        return jdbcTemplate.queryForList(sql, String.class);
     }
 }

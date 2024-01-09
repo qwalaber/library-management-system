@@ -1,37 +1,75 @@
-import React, { useContext, useState, useEffect, useRef } from "react";
-import { Tooltip } from "react-tooltip";
-import axios from "axios";
+import React, { useContext, useState, useEffect, useRef } from 'react';
+import axios from 'axios';
+import { Tooltip } from 'react-tooltip';
 
-import { AuthContext } from "../contexts/AuthContext";
-import BookCreateModal from "./modals/BookCreateModal";
-import BookUpdateModal from "./modals/BookUpdateModal";
-
-const endpoint = 'http://localhost:8080';
+import { AuthContext } from '../contexts/AuthContext';
+import { API_ENDPOINT } from '../configuration/config';
+import BookCreateModal from './modals/BookCreateModal';
+import BookUpdateModal from './modals/BookUpdateModal';
 
 const BooksPage = () => {
 
+    const sortOptions = ['Alphabetically', 'Relevance', 'Newest releases', 'Most borrowed'];
+    const { role, user } = useContext(AuthContext);
     const tooltipRef = useRef(null);
 
-    const { role, user } = useContext(AuthContext);
-
     const [ books, setBooks ] = useState([]);
-    const [ searchKeyword, setSearchKeyword ] = useState(""); 
+    const [ allBooks, setAllBooks ] = useState([]);
     const [ isCreateBook,  setIsCreateBook ] = useState(false);
     const [ selectedBook, setSelectedBook ] = useState({});
     const [ isUpdateBook, setIsUpdateBook ] = useState(false);
-    const [ genreList , getGenreList ] = useState([]);
-    const [ subjects , setSubjects ] = useState([]);
-    const [ filterMenu, setFilterMenu ] = useState("");
-    const [ sortOn, setSortOn ] = useState("Relevance");
+    const [ subjectOptions , setSubjectOptions ] = useState([]);
+    const [ genreOptions , setGenreOptions ] = useState([]);
+    const [ filterMenu, setFilterMenu ] = useState('');
+    const [ activeFilters, setActiveFilters ] = useState({
+        searchKeyword: '',
+        subjects: [],
+        genres: [],
+        sort: 'Alphabetically'
+    })
 
-    const toggleFilterMenu = (type) => {
-        if(filterMenu === "" || filterMenu !== type) setFilterMenu(type);
+    const handleFilterOptionDisplay = type => {
+        if(filterMenu === '' || filterMenu !== type) setFilterMenu(type);
         else if(filterMenu === type) setFilterMenu("");
     }
 
-    const toggleSort = (heading) => {
-        if(sortOn === "" || sortOn !== heading) setSortOn(heading);
-        else if(sortOn === heading) setSortOn("Relevance");
+    const handleActiveFilters = (key, value) => {
+        if(key==='searchKeyword' || key==='sort'){
+            setActiveFilters({...activeFilters, [key]: value});
+            return;
+        }
+        if(activeFilters[key].includes(value)){
+            let index = activeFilters[key].indexOf(value);
+            let newValues = [...activeFilters[key].slice(0,index), ...activeFilters[key].slice(index+1,activeFilters[key].length)];
+            setActiveFilters({...activeFilters, [key]: newValues});
+            return;
+        }
+        setActiveFilters({...activeFilters, [key]: [...activeFilters[key], value]});
+        return;
+    }
+
+    const handleFilteredBooks = () => {
+        let filteredSortedBooks = [...allBooks];
+        if(activeFilters.genres.length>=1) filteredSortedBooks = filteredSortedBooks.filter(book=>activeFilters.genres.includes(book.genre));
+        if(activeFilters.subjects.length>=1) filteredSortedBooks = filteredSortedBooks.filter(book=>activeFilters.subjects.includes(book.subject));
+        if(activeFilters.searchKeyword !== '') filteredSortedBooks = filteredSortedBooks.filter(book=>{
+            for(let key in book) {
+                if(typeof book[key] === 'string' && book[key].toLowerCase().includes(activeFilters.searchKeyword)) return true
+            }
+        })
+        if(activeFilters.sort === 'Alphabetically') filteredSortedBooks.sort((a, b) => {
+            if (a.availability === b.availability) {
+                const startsWithLetterA = isNaN(a.title.charAt(0));
+                const startsWithLetterB = isNaN(b.title.charAt(0));
+    
+                if (startsWithLetterA && !startsWithLetterB) return -1;
+                else if (!startsWithLetterA && startsWithLetterB) return 1;
+                else if (startsWithLetterA && startsWithLetterB) return a.title.localeCompare(b.title)
+                else return parseFloat(a.title) - parseFloat(b.title);
+            }
+            return a.availability ? -1 : 1;
+        });
+        setBooks(filteredSortedBooks);
     }
 
     const handleReservation = bookId => {
@@ -39,9 +77,9 @@ const BooksPage = () => {
             bookId: bookId,
             userEmail: user.email
         }
-        axios.post(`${endpoint}/reservations`, reservation)
+        axios.post(`${API_ENDPOINT}/reservations`, reservation)
             .then(()=>{
-                axios.get(`${endpoint}/books`)
+                axios.get(`${API_ENDPOINT}/books`)
                     .then(res => setBooks(res.data)) 
                     .catch(err => {
                     console.error('Error fetching books after new reservation:', err);
@@ -57,9 +95,9 @@ const BooksPage = () => {
             bookId: bookId,
             userEmail: user.email
         }
-        axios.post(`${endpoint}/borrows`, borrow)
+        axios.post(`${API_ENDPOINT}/borrows`, borrow)
             .then(()=>{
-                axios.get(`${endpoint}/books`)
+                axios.get(`${API_ENDPOINT}/books`)
                     .then(res => setBooks(res.data)) 
                     .catch(err => {
                     console.error('Error fetching books after new borrow:', err);
@@ -78,71 +116,72 @@ const BooksPage = () => {
     }
 
     useEffect(()=>{
-        axios.get(`${endpoint}/books/subjects`)
-            .then(res => setSubjects(res.data)) 
-            .catch(err => {
-                console.error('Error fetching subjects:', err);
-        });
-    },[])
-
-    useEffect(()=>{
-        setFilterMenu("");
-    },[sortOn])
-
-    useEffect(()=>{
         if(!isUpdateBook && !isCreateBook) axios({
             method: "get",
-            url: `${endpoint}/books`
+            url: `${API_ENDPOINT}/books`
           })
-            .then(res => setBooks(res.data)) 
+            .then(res => {
+                setAllBooks(res.data);
+                setSubjectOptions([...new Set([...res.data].map(book=>book.subject))]);
+                setGenreOptions([...new Set([...res.data].map(book=>book.genre))]);
+            }) 
             .catch(err => {
                 console.error('Error fetching books:', err);
+                return;
         });
     },[isCreateBook, isUpdateBook])
+
+    useEffect(() => {
+        handleFilteredBooks();
+    }, [allBooks, activeFilters]);
 
     return(<div className="books-page" ref={tooltipRef}>
         <div className="container">
             <div className="row">
                 <h3 className="text-center text-muted mb-5">Books</h3>
-                <div className="col-sm-5 mb-3">
-                    <span className="position-relative">
-                        <input type="text" className="text-center bg-info ps-sm-2 rounded-5 border-dark border-0" id="update-book-user-email-input" name="search-books" placeholder={`${role==="Librarian" ? `ID, ` : ``}Title or Author`} onChange={e=>setSearchKeyword(e.target.value)}/>
-                        <i className="fa fa-search position-absolute top-50 translate-middle-y end-0 me-2 text-muted text-white" aria-hidden="true"></i>
-                    </span>
-                </div>
                 <div className="col-sm-4 mb-3">
                     <span>
-                        <button className="btn btn-info w-100 p-0 rounded-2" onClick={()=>toggleFilterMenu("Filter")}>
-                            <i className="fa-solid fa-shuffle"></i> Filter
+                        <button className="btn btn-info w-100 p-0 rounded-2" onClick={()=>handleFilterOptionDisplay("Filter")}>
+                            <i className="fa-solid fa-shuffle pe-1"></i>
+                            <span>Filter</span>
+                            {(activeFilters.subjects.length > 0 || activeFilters.genres.length > 0) && <i class="fa-solid fa-circle fa-2xs ms-1 text-tertiary"></i> }
                         </button>
                     </span>
                 </div>
                 <div className="col-sm-3 mb-3">
                     <span>
-                        <button className="btn btn-info w-100 p-0 rounded-2" onClick={()=>toggleFilterMenu("Sort")}>
-                            <i className="fa-solid fa-arrow-down-wide-short"></i> 
+                        <button className="btn btn-info w-100 p-0 rounded-2" onClick={()=>handleFilterOptionDisplay("Sort")}>
+                            <i className="fa-solid fa-arrow-down-wide-short pe-1"></i> 
                             <span>Sort</span> 
-                            { sortOn!=="Relevance" && <span>⚪</span> }
+                            { activeFilters.sort!=='Alphabetically' && <i class="fa-solid fa-circle fa-2xs ms-1 text-tertiary"></i> }
                         </button>
                     </span>
                 </div>
-                { filterMenu==="Filter" && <div className="row mb-3">
-                    <div className="col-sm-5"></div>
-                    <div className="col-sm-7 px-2">
+                <div className="col-sm-5 mb-3">
+                    <span className="position-relative">
+                        <input type="text" className="text-center bg-info ps-sm-2 rounded-5 border-dark border-0" id="update-book-user-email-input" name="search-books" placeholder={`${role==="Librarian" ? `ID, ` : ``}Title or Author`} onChange={e=>handleActiveFilters('searchKeyword', e.target.value)}/>
+                        <i className="fa fa-search position-absolute top-50 translate-middle-y end-0 me-2 text-muted text-white" aria-hidden="true"></i>
+                    </span>
+                </div>
+            </div>
+            <div className="row">
+                {filterMenu==="Filter" && <div className="row mb-3">
+                    <div className="px-2">
                         <span>Subjects: </span>
-                        { subjects.map(subject=><button className="btn btn-outline-secondary btn-filter px-3 py-1 ms-1 rounded-4">{subject}</button>)}
+                        { subjectOptions.map((subject, key)=><button key={key} className={`btn btn-filter px-3 py-1 ms-1 rounded-4 ${activeFilters.subjects.includes(subject) ? `btn-secondary` : `btn-outline-secondary`}`} onClick={()=>handleActiveFilters('subjects', subject)}>{subject}</button>)}
                         <span>Genres: </span>
+                        { genreOptions.map((genre, key)=><button key={key} className={`btn btn-filter px-3 py-1 ms-1 rounded-4 ${activeFilters.genres.includes(genre) ? `btn-secondary` : `btn-outline-secondary`}`} onClick={()=>handleActiveFilters('genres', genre)}>{genre}</button>)}
                    </div>
                 </div> }
-                { filterMenu==="Sort" && <div className="row mb-3">
-                    <div className="col-sm-9"></div>
-                    <div className="col-sm-3 d-flex">
-                        <button className={`btn btn-outline-secondary btn-sort px-3 py-1 ms-3 rounded-4 ${sortOn==="Relevance" ? `btn-secondary text-light`:``}`} onClick={()=>toggleSort("Relevance")}>Relevance</button>
-                        <button className={`btn btn-outline-secondary btn-sort px-3 py-1 ms-1 rounded-4 ${sortOn==="Most Borrowed" ? `btn-secondary text-light`:``}`} onClick={()=>toggleSort("Most Borrowed")}>Most Borrowed</button>
-                        <button className={`btn btn-outline-secondary btn-sort px-3 py-1 ms-1 rounded-4 ${sortOn==="Latest" ? `btn-secondary text-light`:``}`} onClick={()=>toggleSort("Latest")}>Latest</button>
+                {filterMenu==="Sort" && <div className="row mb-3">
+                    <div className="col-sm-4"></div>
+                    <div className="col-sm-8 d-flex">
+                        { sortOptions.map((option, key)=><button key={key} className={`btn btn-outline-secondary btn-sort px-3 py-1 ms-1 rounded-4 ${activeFilters.sort===option ? `btn-secondary text-light`:``}`}>{option}</button> )}
                     </div> 
                 </div> }
-                { books.map((book,i)=>{
+            </div>
+            <div className="row">
+                {books.map((book,i)=>{
                     return<div key={i} className="col-12 col-sm-6 col-md-4" onClick={()=>handleShowBookModal(book)}>
                         <div className="card mb-3 p-3">
                             <div className="row d-flex py-0">
@@ -152,16 +191,16 @@ const BooksPage = () => {
                                 <span className="badge rounded-pill px-2 me-1 bg-primary">{book.subject}</span>
                                 <span className={`badge rounded-pill px-2 ${book.genre==="Non-fiction" ? `bg-secondary` : `bg-dark`}`}>{book.genre}</span>
                                 <p> 
-                                    { role !== "User" && book.isAvailable ? 
+                                    { role !== "User" && book.availability ? 
                                         <span className="badge border px-3 py-2 mt-1 border-success text-success">Available</span> 
-                                        : role !== "User" && !book.isAvailable ? 
+                                        : role !== "User" && !book.availability ? 
                                         <span className="badge border px-3 py-2 mt-1 border-danger text-danger">Not Available</span> 
-                                        : role === "User" && book.isAvailable ? 
+                                        : role === "User" && book.availability ? 
                                         <>
                                             <button className="btn btn-light btn-outline-dark me-1 mt-1" data-tooltip-id={`tooltip-borrow-${book.bookId}`}><i className="fa-brands fa-opencart"></i></button>
                                             <button className="btn btn-outline-success reserve-btn mt-1" data-tooltip-id={`tooltip-reserve-${book.bookId}`}>Reserve</button>
                                         </>
-                                        : role === "User" && !book.isAvailable ? 
+                                        : role === "User" && !book.availability ? 
                                         <button className="btn btn-outline-danger me-2">Not available</button>
                                         : null
                                     }
@@ -186,7 +225,7 @@ const BooksPage = () => {
                 })}
                 { role==="Librarian" ? <button className="btn btn-dark mt-1 mb-3" onClick={()=>setIsCreateBook(true)}>Add Book</button> : null}
                 <BookCreateModal isCreateBook={isCreateBook} setIsCreateBook={setIsCreateBook}/>
-                <BookUpdateModal isUpdateBook={isUpdateBook} setIsUpdateBook={setIsUpdateBook} book={selectedBook} endpoint={endpoint}/>
+                <BookUpdateModal isUpdateBook={isUpdateBook} setIsUpdateBook={setIsUpdateBook} book={selectedBook} API_ENDPOINT={API_ENDPOINT}/>
             </div>
         </div>
     </div>)
