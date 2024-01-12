@@ -22,6 +22,7 @@ public class User {
     private int borrowsLeft;
     @Column(name = "membership_date")
     private Date membershipDate;
+    private boolean deleted;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private List<Transaction> transactions;
@@ -104,5 +105,12 @@ public class User {
 
     public void setTransactions(List<Transaction> transactions) {
         this.transactions = transactions;
+    }
+    public boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

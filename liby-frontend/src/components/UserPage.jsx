@@ -1,8 +1,9 @@
 import React, { useState, useContext } from "react";
 
-import TransactionsDataDummy from "./../assets/data/TransactionsDataDummy";
+import TransactionsDataDummy from "../assets/data/TransactionsDataDummy";
 
-import { AuthContext } from "../contexts/AuthContext";
+import { AuthContext } from "../assets/contexts/AuthContext";
+import { API_ENDPOINT } from "../assets/configuration/config";
 
 const dummyActive = TransactionsDataDummy.filter(transaction => transaction.isReturned === false);
 const dummyAll = TransactionsDataDummy.filter(transaction => transaction.isReturned === true);
@@ -23,10 +24,10 @@ const UserPage = () => {
 
         if (isOverdue!==undefined) {
             if (isOverdue && daysDue===1) return <p className="mb-0">1 day <br/> Overdue</p>;
-            else if (isOverdue) return <p className="mb-0">{-daysDue} days <br/> Overdue</p>;
-            else if (daysDue === 0) return <p className="mb-0">Due Today</p>;
-            else return <p className="mb-0">Due in <br/> {daysDue} days</p>
-        } else return <p className="mb-0">Return on <br /> {formatReturnDate(date)}</p>
+            if (isOverdue) return <p className="mb-0">{-daysDue} days <br/> Overdue</p>;
+            if (daysDue === 0) return <p className="mb-0">Due Today</p>;
+            return <p className="mb-0">Due in <br/> {daysDue} days</p>
+        } return <p className="mb-0">Return on <br /> {formatReturnDate(date)}</p>
     }
 
     const formatReturnDate = dateString => {

@@ -179,6 +179,10 @@ a {
   }
 }
 
+.hover-pointer:hover {
+  cursor: pointer;
+}
+
 .reserve-btn:hover {
   color: white;
 }
@@ -274,10 +278,6 @@ a {
 
 /* Manage Page */
 
-.manage-searchbar::placeholder {
-  color: white !important;
-}
-
 .manage-searchbar-icon {
   color: white !important;
 }
@@ -295,7 +295,7 @@ a {
 } 
 
 .manage-book-card {
-  height: 60px !important;
+  height: 65px !important;
 }
 
 .manage-user-book-comments {

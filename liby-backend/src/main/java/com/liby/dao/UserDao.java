@@ -48,6 +48,7 @@ public class UserDao {
                 "MIN(CASE WHEN t.return_date IS NULL THEN t.due_date ELSE NULL END) as earliest_active_due_date, " +
                 "MIN(t.due_date) as earliest_due_date " +
                 "FROM users u LEFT JOIN transactions t ON u.user_id = t.user_id " +
+                "WHERE u.deleted = FALSE " +
                 "GROUP BY u.user_id, u.name, u.email, u.password, u.gender, u.address, u.birthdate, u.borrows_left, u.membership_date " +
                 "ORDER BY CASE WHEN earliest_active_due_date IS NULL THEN 1 ELSE 0 END, earliest_active_due_date ASC, earliest_due_date ASC";
         List<User> users = jdbcTemplate.query(sql, new RowMapper<User>() {
@@ -66,7 +67,7 @@ public class UserDao {
         String sql = "SELECT t.transaction_id, t.borrow_date, t.due_date, " +
                 "t.return_date, t.is_renewed, t.overdue_days, " +
                 "b.book_id, b.title, b.author, b.genre, b.subject, b.language, " +
-                "b.publication_date, b.image_name, b.is_available, " +
+                "b.publication_date, b.image_name, b.availability, " +
                 "b.total_borrows, b.borrows_thirty_days " +
                 "FROM transactions t " +
                 "INNER JOIN books b ON t.book_id = b.book_id " +
@@ -104,17 +105,15 @@ public class UserDao {
     }
 
     public User saveUser(User user) {
-        String sql = "INSERT INTO users (name, email, password, gender, address, birthdate, borrows_left, membership_date) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO users (name, email, password, gender, address, birthdate) " +
+                "VALUES (?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql,
                 user.getName(),
                 user.getEmail(),
                 user.getPassword(),
                 user.getGender(),
                 user.getAddress(),
-                user.getBirthdate(),
-                user.getBorrowsLeft(),
-                user.getMembershipDate());
+                user.getBirthdate());
         return user;
     }
 
@@ -146,15 +145,6 @@ public class UserDao {
         }
     }
 
-    public void deleteUser(int userId) {
-        if (doesUserExist(userId)) {
-            String sql = "DELETE FROM users WHERE user_id = ?";
-            jdbcTemplate.update(sql, userId);
-        } else {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-        }
-    }
-
     public User findByEmail(String email) {
         try {
             String sql = "SELECT * FROM users WHERE email = ?";
@@ -162,6 +152,15 @@ public class UserDao {
         } catch (EmptyResultDataAccessException e) {
             System.out.println("No User found with email: " + email + e);
             return null;
+        }
+    }
+    public void deleteUser(int userId) {
+        if (doesUserExist(userId)) {
+            String sql = "UPDATE users SET deleted = TRUE where user_id = ?";
+            jdbcTemplate.update(sql, userId);
+            ResponseEntity.ok("User marked as deleted");
+        } else {
+            ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
     }
 }

@@ -48,7 +48,7 @@ public class BookController {
         }
     }
 
-    @PutMapping("/edit/{id}")
+    @PutMapping("/{id}")
     public Book updateBook(@PathVariable int id, @RequestBody Book updatedBook) {
         try{
             return bookDao.updateBook(id, updatedBook);

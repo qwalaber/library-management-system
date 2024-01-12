@@ -1,25 +1,28 @@
 import React, { useEffect } from "react";
-
 import axios from "axios";
 import ReactModal from "react-modal";
 
-const usersApi = '';
-
-const UserCreateModal = ({ isRegistrationModalOpen, setIsRegistrationModalOpen }) => {
+const NewBookModal = ({ isNewUserMode, setIsNewUserMode, API_ENDPOINT }) => {
 
     const handleAddUser = e => {
         const newUser = {
             name: e.target.name.value,
-            passsword: e.target.password.value,
+            password: e.target.password.value,
             email: e.target.email.value,
             address: e.target.address.value,
             gender: e.target.gender.value,
             birthdate: e.target.birthdate.value
         }
-        axios
-            .post(usersApi, newUser)
-            .then(res => console.log(`User with name ${newUser.name} created successfully. `, res))
-            .catch(err => console.error(`Error creating user with name ${newUser.name}: `, err));
+        console.log("newUser: ", newUser)
+        axios({
+            method: "post",
+            url: `${API_ENDPOINT}/users/register`,
+            data: newUser
+        })
+            .then(res => {
+                console.log(`User with email ${newUser.email} created successfully. `, res);
+            })
+            .catch(err => console.error(`Error creating user with email ${newUser.email}: `, err));
     }
 
     useEffect(() => {
@@ -27,8 +30,8 @@ const UserCreateModal = ({ isRegistrationModalOpen, setIsRegistrationModalOpen }
     }, []);
 
     return(
-    <ReactModal isOpen={isRegistrationModalOpen} closeTimeoutMS={200}>
-        <i className="fa-solid fa-xmark position-absolute end-0 pe-3" onClick={()=>setIsRegistrationModalOpen(false)} style={{ cursor: 'pointer' }}></i>
+    <ReactModal isOpen={isNewUserMode} closeTimeoutMS={200}>
+        <i className="fa-solid fa-xmark position-absolute end-0 pe-3" onClick={()=>setIsNewUserMode(false)} style={{ cursor: 'pointer' }}></i>
         <h4 className="position-absolute start-50 translate-middle-x">Register New User</h4>
         <div className="">
             <form className="text-center w-100" onSubmit={e=>handleAddUser(e)}>
@@ -74,4 +77,4 @@ const UserCreateModal = ({ isRegistrationModalOpen, setIsRegistrationModalOpen }
     )
 }
 
-export default UserCreateModal;
+export default NewBookModal;

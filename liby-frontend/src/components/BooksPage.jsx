@@ -2,10 +2,10 @@ import React, { useContext, useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { Tooltip } from 'react-tooltip';
 
-import { AuthContext } from '../contexts/AuthContext';
-import { API_ENDPOINT } from '../configuration/config';
-import BookCreateModal from './modals/BookCreateModal';
-import BookUpdateModal from './modals/BookUpdateModal';
+import { AuthContext } from '../assets/contexts/AuthContext';
+import { API_ENDPOINT } from '../assets/configuration/config';
+import NewBookModal from './modals/NewBookModal';
+import EditBookModal from './modals/EditBookModal';
 
 const BooksPage = () => {
 
@@ -15,9 +15,9 @@ const BooksPage = () => {
 
     const [ books, setBooks ] = useState([]);
     const [ allBooks, setAllBooks ] = useState([]);
-    const [ isCreateBook,  setIsCreateBook ] = useState(false);
+    const [ isNewBookMode,  setIsNewBookMode ] = useState(false);
     const [ selectedBook, setSelectedBook ] = useState({});
-    const [ isUpdateBook, setIsUpdateBook ] = useState(false);
+    const [ isEditBookMode, setIsEditBookMode ] = useState(false);
     const [ subjectOptions , setSubjectOptions ] = useState([]);
     const [ genreOptions , setGenreOptions ] = useState([]);
     const [ filterMenu, setFilterMenu ] = useState('');
@@ -111,12 +111,12 @@ const BooksPage = () => {
     const handleShowBookModal = book => {
         if(role==="Librarian"){
             setSelectedBook(book);
-            setIsUpdateBook(true);
+            setIsEditBookMode(true);
         }
     }
 
     useEffect(()=>{
-        if(!isUpdateBook && !isCreateBook) axios({
+        if(!isEditBookMode && !isNewBookMode) axios({
             method: "get",
             url: `${API_ENDPOINT}/books`
           })
@@ -129,7 +129,7 @@ const BooksPage = () => {
                 console.error('Error fetching books:', err);
                 return;
         });
-    },[isCreateBook, isUpdateBook])
+    },[isNewBookMode, isEditBookMode])
 
     useEffect(() => {
         handleFilteredBooks();
@@ -182,7 +182,7 @@ const BooksPage = () => {
             </div>
             <div className="row">
                 {books.map((book,i)=>{
-                    return<div key={i} className="col-12 col-sm-6 col-md-4" onClick={()=>handleShowBookModal(book)}>
+                    return<div key={i} className={`col-12 col-sm-6 col-md-4 ${role==="Librarian" ? `hover-pointer` : ``}`} onClick={()=>handleShowBookModal(book)}>
                         <div className="card mb-3 p-3">
                             <div className="row d-flex py-0">
                             <div className="col-7">
@@ -223,11 +223,11 @@ const BooksPage = () => {
                     </div>
                 </div>
                 })}
-                { role==="Librarian" ? <button className="btn btn-dark mt-1 mb-3" onClick={()=>setIsCreateBook(true)}>Add Book</button> : null}
-                <BookCreateModal isCreateBook={isCreateBook} setIsCreateBook={setIsCreateBook}/>
-                <BookUpdateModal isUpdateBook={isUpdateBook} setIsUpdateBook={setIsUpdateBook} book={selectedBook} API_ENDPOINT={API_ENDPOINT}/>
+                { role==="Librarian" ? <button className="btn btn-dark mt-1 mb-3" onClick={()=>setIsNewBookMode(true)}>Add Book</button> : null}
             </div>
         </div>
+        <EditBookModal isEditBookMode={isEditBookMode} setIsEditBookMode={setIsEditBookMode} book={selectedBook} API_ENDPOINT={API_ENDPOINT}/>
+        <NewBookModal isNewBookMode={isNewBookMode} setIsNewBookMode={setIsNewBookMode} API_ENDPOINT={API_ENDPOINT}/>
     </div>)
 }
 

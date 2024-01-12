@@ -26,6 +26,7 @@ public class Book {
     private int totalBorrows;
     @Column(name = "borrows_thirty_days")
     private int borrowsThirtyDays;
+    private boolean deleted;
 
     public int getBookId() {
         return bookId;
@@ -113,5 +114,12 @@ public class Book {
 
     public void setBorrowsThirtyDays(int borrowsThirtyDays) {
         this.borrowsThirtyDays = borrowsThirtyDays;
+    }
+    public boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

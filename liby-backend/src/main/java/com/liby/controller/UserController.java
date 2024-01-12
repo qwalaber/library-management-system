@@ -39,7 +39,7 @@ public class UserController {
         }
     }
 
-    @PostMapping
+    @PostMapping("/register")
     public User createUser(@RequestBody User user) {
         try {
             return userDao.saveUser(user);
@@ -51,9 +51,9 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public User updateUser(@PathVariable int userId, @RequestBody User updatedUser) {
+    public User updateUser(@PathVariable int id, @RequestBody User updatedUser) {
         try {
-            return userDao.updateUser(userId, updatedUser);
+            return userDao.updateUser(id, updatedUser);
         } catch (Exception e) {
             e.printStackTrace();
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update user");
@@ -61,10 +61,10 @@ public class UserController {
         }
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable int userId) {
+    @DeleteMapping("/delete/{id}")
+    public void deleteUser(@PathVariable int id) {
         try {
-            userDao.deleteUser(userId);
+            userDao.deleteUser(id);
         } catch (Exception e) {
             e.printStackTrace();
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("User deletion failed");

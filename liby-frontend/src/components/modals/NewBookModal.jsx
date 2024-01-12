@@ -1,11 +1,8 @@
 import React, { useEffect } from "react";
-
 import axios from "axios";
 import ReactModal from "react-modal";
 
-const endpoint = 'http://localhost:8080';
-
-const BookCreateModal = ({ isCreateBook, setIsCreateBook }) => {
+const NewBookModal = ({ isNewBookMode, setIsNewBookMode, API_ENDPOINT }) => {
 
     const handleAddBook = e => {
         e.preventDefault();
@@ -20,12 +17,12 @@ const BookCreateModal = ({ isCreateBook, setIsCreateBook }) => {
         }
         axios({
             method: "post",
-            url: `${endpoint}/books/create`,
+            url: `${API_ENDPOINT}/books/create`,
             data: newBook
         })
             .then(res => {
                 console.log(`Book with name ${newBook.title} created successfully. `, res);
-                setIsCreateBook(!setIsCreateBook);
+                setIsNewBookMode(!isNewBookMode);
             })
             .catch(err => console.error(`Error creating book with name ${newBook.title}: `, err));
     }
@@ -35,8 +32,8 @@ const BookCreateModal = ({ isCreateBook, setIsCreateBook }) => {
     }, []);
 
     return(
-    <ReactModal isOpen={isCreateBook} closeTimeoutMS={200}>
-        <i className="fa-solid fa-xmark position-absolute end-0 pe-3" onClick={()=>setIsCreateBook(false)} style={{ cursor: 'pointer' }}></i>
+    <ReactModal isOpen={isNewBookMode} closeTimeoutMS={200}>
+        <i className="fa-solid fa-xmark position-absolute end-0 pe-3" onClick={()=>setIsNewBookMode(false)} style={{ cursor: 'pointer' }}></i>
         <h4 className="position-absolute start-50 translate-middle-x">Create Book</h4>
         <div className="">
             <form className="text-center w-100" onSubmit={e=>handleAddBook(e)}>
@@ -91,4 +88,4 @@ const BookCreateModal = ({ isCreateBook, setIsCreateBook }) => {
     )
 }
 
-export default BookCreateModal;
+export default NewBookModal;

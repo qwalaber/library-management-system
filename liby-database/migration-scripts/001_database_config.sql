@@ -11,7 +11,8 @@ CREATE TABLE Users (
     address VARCHAR(255) NOT NULL,
     birthdate DATE NOT NULL,
     borrows_left INT NOT NULL DEFAULT 8,
-    membership_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    membership_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    deleted BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 CREATE TABLE Librarians (
@@ -50,10 +51,10 @@ CREATE TABLE Transactions (
     renewal BOOLEAN NOT NULL DEFAULT FALSE,
     librarian_id INT NOT NULL,
     return_librarian_id INT DEFAULT NULL,
-    FOREIGN KEY (user_id) REFERENCES Users(user_id),
-    FOREIGN KEY (book_id) REFERENCES Books(book_id),
-    FOREIGN KEY (librarian_id) REFERENCES librarians(librarian_id),
-    FOREIGN KEY (return_librarian_id) REFERENCES librarians(librarian_id)
+    CONSTRAINT fk_user_id_transactions FOREIGN KEY (user_id) REFERENCES Users(user_id),
+    CONSTRAINT fk_book_id_transactions FOREIGN KEY (book_id) REFERENCES Books(book_id),
+    CONSTRAINT fk_librarian_id_transactions FOREIGN KEY (librarian_id) REFERENCES librarians(librarian_id),
+    CONSTRAINT fk_return_librarian_id_transactions FOREIGN KEY (return_librarian_id) REFERENCES librarians(librarian_id)
 );
 
 CREATE TABLE Reservations (
@@ -62,6 +63,6 @@ CREATE TABLE Reservations (
     book_id INT NOT NULL,
     reservation_date DATE NOT NULL,
     expiryDate DATE AS (DATE_ADD(reservation_date, INTERVAL 5 DAY)) NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES Users(user_id),
-    FOREIGN KEY (book_id) REFERENCES Books(book_id)
+    CONSTRAINT fk_user_id_reservations FOREIGN KEY (user_id) REFERENCES Users(user_id),
+    CONSTRAINT fk_book_id_reservations FOREIGN KEY (book_id) REFERENCES Books(book_id)
 );

@@ -2,12 +2,12 @@
 @import '~bootstrap/scss/variables';
 
 $primary: rgb(71, 89, 225);
+$tertiary: rgb(186, 135, 38);
+$info: rgb(185, 194, 191);
+$warning: rgb(177, 205, 207);
 $success: rgb(84, 128, 115);
 $danger:rgb(167, 57, 57);
 $dark: #222222;
-$info: rgb(185, 194, 191);
-$warning: rgb(177, 205, 207);
-$tertiary: rgb(186, 135, 38);
 
 $theme-colors: (
   "primary": $primary, 

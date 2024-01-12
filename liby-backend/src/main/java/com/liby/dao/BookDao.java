@@ -34,7 +34,7 @@ public class BookDao {
         return book;
     }
     public List<Book> getAllBooks() {
-        String sql = "SELECT * FROM books";
+        String sql = "SELECT * FROM books where deleted = FALSE";
         return jdbcTemplate.query(sql, this::mapRowToBook);
     }
     public Book getBookById(int bookId) {
@@ -85,8 +85,9 @@ public class BookDao {
     }
     public void deleteBook(int bookId) {
         if(doesBookExist(bookId)) {
-            String sql = "DELETE FROM books WHERE book_id = ?";
+            String sql = "UPDATE books SET deleted = TRUE where book_id = ?";
             jdbcTemplate.update(sql, bookId);
+            ResponseEntity.ok("Book marked as deleted");
         } else {
             ResponseEntity.status(HttpStatus.NOT_FOUND).body("Book not found");
         }

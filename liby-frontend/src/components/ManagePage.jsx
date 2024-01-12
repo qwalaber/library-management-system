@@ -4,10 +4,9 @@ import axios from "axios";
 import { Tooltip } from "react-tooltip";
 import Masonry from 'react-masonry-css';
 
-import { AuthContext } from "../contexts/AuthContext";
-import UserUpdateModal from "./modals/UserUpdateModal";
-
-const endpoint = 'http://localhost:8080';
+import { AuthContext } from "../assets/contexts/AuthContext";
+import { API_ENDPOINT } from "../assets/configuration/config";
+import EditUserModal from "./modals/EditUserModal";
 
 const ManagePage = () => {
 
@@ -25,7 +24,7 @@ const ManagePage = () => {
 
   const [ users, setUsers ] = useState([]);
   const [ allUsers, setAllUsers ] = useState([]);
-  const [ isUpdateMode, setIsUpdateMode ] = useState(false);
+  const [ isEditUserMode, setIsEditUserMode ] = useState(false);
   const [ selectedUser, setSelectedUser ] = useState({});
 
   const dateFormatter = date => {
@@ -78,7 +77,7 @@ const ManagePage = () => {
   useEffect(()=>{
     axios({
       method: "get",
-      url: `${endpoint}/users`
+      url: `${API_ENDPOINT}/users`
     })
     .then(res => {
         console.log("fetched users: ",res.data);
@@ -95,8 +94,8 @@ const ManagePage = () => {
       <h3 className="text-center text-muted mb-5">Customers</h3>
       <div className="mb-4">
         <span className="position-relative">
-          <input type="text" className="manage-searchbar border-0 bg-dark ps-sm-2 rounded-5 border-dark text-white" id="update-book-user-email-input" name="search-books" placeholder="Book ID, Name or User ID" onChange={e=>searchUsers(e.target.value.toLowerCase())}/>
-          <i className="manage-searchbar-icon fa fa-search position-absolute top-50 translate-middle-y end-0 me-2" aria-hidden="true"></i>
+          <input type="text" className="manage-searchbar ps-sm-2 rounded-4" id="update-book-user-email-input" name="search-books" placeholder="Book ID, Name or User ID" onChange={e=>searchUsers(e.target.value.toLowerCase())}/>
+          <i className="fa fa-search manage-searchbar-icon text-dark position-absolute top-50 translate-middle-y end-0 me-2" aria-hidden="true"></i>
         </span>
       </div>
       <Masonry
@@ -106,18 +105,18 @@ const ManagePage = () => {
       {users.map((user, userIndex) => {
         return <div key={userIndex} className="masonry-item">
           <div className="manage-user-details card bg-dark p-2 pt-3 mb-3 text-white">
-            <p className="fw-bold mb-0 fs-6">{user.userId}. {user.name} ({user.gender === "Female" ? "F" : user.gender === "Male" ? "M" : "O"})</p>
-            <p className="mb-1">Email: <span className="mb-0">{user.email}</span></p>
-            <p className="mb-1">Brithday: {user.birthdate}</p>
-            <p className="mb-1">Address: {user.address}</p>
-            <p className="mb-3">Sign up: {dateFormatter(user.membershipDate)}</p>
+            <p className="fw-bold mb-1 fs-6">{user.userId}. {user.name} ({user.gender === "Female" ? "F" : user.gender === "Male" ? "M" : "O"})</p>
+            <p className="mb-0"><span className="mb-0">{user.email}</span></p>
+            <p className="mb-0">{user.birthdate} (bday)</p>
+            <p className="mb-0">{user.address}</p>
+            <p className="mb-3">Since: {dateFormatter(user.membershipDate)}</p>
             <div className="row px-2 py-0">
               {user.transactions.map(transaction => {
                 if(transaction.returnDate!==null) return null;
                 const dueDate = new Date(transaction.dueDate).setHours(0, 0, 0, 0);
                 const isOverdue = dueDate < todayDate;
                 return <div key={transaction.transactionId} className="manage-user-book col-6 px-1" data-tooltip-id={`m-tooltip-${transaction.transactionId}`}>
-                  <div className={`card book-card p-1 mb-2 ${transaction.isReturned ? "bg-light" : isOverdue ? "bg-danger text-white" : "bg-success text-white"}`} data-toggle="tooltip" data-placement="top">
+                  <div className={`card manage-book-card p-1 mb-2 ${transaction.isReturned ? "bg-light" : isOverdue ? "bg-danger text-white" : "bg-success text-white"}`} data-toggle="tooltip" data-placement="top">
                     <p className="manage-user-book-title fw-bold mb-0">{transaction.book.title.substring(0, 17)}</p>
                     <p className="manage-user-book-comments">{getBorrowComments(dueDate, isOverdue)}</p>
                     <Tooltip id={`m-tooltip-${transaction.transactionId}`} className={`${!transaction.book.isReturned ? `d-block` : `d-none` } m-tooltip-style`} delayShow={200} openEvents={{ click: true }} closeEvents={{ click: true }} globalCloseEvents={{ clickOutsideAnchor: true }} clickable={true}>
@@ -131,8 +130,8 @@ const ManagePage = () => {
               })}
             </div>
             <div className="d-flex align-items-end">
-              <i className="fa-solid fa-pen-to-square ms-auto" onClick={()=>{setSelectedUser(user);setIsUpdateMode(true)}} style={{ cursor: 'pointer' }}></i>
-              <UserUpdateModal isUpdateMode={isUpdateMode} setIsUpdateMode={setIsUpdateMode} user={selectedUser}/>
+              <i className="fa-solid fa-pen-to-square ms-auto" onClick={()=>{setSelectedUser(user);setIsEditUserMode(true)}} style={{ cursor: 'pointer' }}></i>
+              <EditUserModal isEditUserMode={isEditUserMode} setIsEditUserMode={setIsEditUserMode} user={selectedUser} API_ENDPOINT={API_ENDPOINT}/>
           </div>
         </div>
       </div>

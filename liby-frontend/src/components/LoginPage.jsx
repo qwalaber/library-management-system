@@ -2,8 +2,9 @@ import React, { useState, useContext, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 
-import { AuthContext } from "../contexts/AuthContext";
-import UserCreateModal from "./modals/UserCreateModal";
+import { AuthContext } from "../assets/contexts/AuthContext";
+import { API_ENDPOINT } from "../assets/configuration/config";
+import NewUserModal from "./modals/NewUserModal";
 
 const endpoint = 'http://localhost:8080';
 
@@ -14,7 +15,7 @@ const LoginPage = () => {
     const { logIn } = useContext(AuthContext);
     
     const [ logInErrorMessage, setLogInErrorMessage ] = useState("");
-    const [ isRegistrationModalOpen, setIsRegistrationModalOpen ] = useState(false);
+    const [ isNewUserMode, setIsNewUserMode ] = useState(false);
 
     const handleLogIn = e => {
         e.preventDefault();
@@ -69,8 +70,8 @@ const LoginPage = () => {
                 </form>
             </div>
             { logInErrorMessage!=="" && <div className="login-form-width text-center bg-danger rounded-2 mx-auto text-white my-2" style={{opacity: 0.6}}>{logInErrorMessage}</div>}
-            <span onClick={()=>setIsRegistrationModalOpen(true)} className="sign-up-prompt text-center text-muted fst-italic mt-1">No Account Yet, Sign Up?</span>
-            <UserCreateModal isRegistrationModalOpen={isRegistrationModalOpen} setIsRegistrationModalOpen={setIsRegistrationModalOpen}/>
+            <span onClick={()=>setIsNewUserMode(true)} className="sign-up-prompt text-center text-muted fst-italic mt-1">No Account Yet, Sign Up?</span>
+            <NewUserModal isNewUserMode={isNewUserMode} setIsNewUserMode={setIsNewUserMode} API_ENDPOINT={API_ENDPOINT}/>
         </div>
     </div>
 </div>)
