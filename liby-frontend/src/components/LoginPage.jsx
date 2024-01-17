@@ -1,19 +1,14 @@
-import React, { useState, useContext, useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
+import React, { useContext, useState } from "react";
 import axios from "axios";
 
-import { AuthContext } from "../assets/contexts/AuthContext";
 import { API_ENDPOINT } from "../assets/configuration/config";
 import NewUserModal from "./modals/NewUserModal";
-
-const endpoint = 'http://localhost:8080';
+import { AuthContext } from "../contexts/AuthContext";
 
 const LoginPage = () => {
 
-    const navigate = useNavigate();
+    const { login } = useContext(AuthContext);
 
-    const { logIn } = useContext(AuthContext);
-    
     const [ logInErrorMessage, setLogInErrorMessage ] = useState("");
     const [ isNewUserMode, setIsNewUserMode ] = useState(false);
 
@@ -24,31 +19,30 @@ const LoginPage = () => {
             email: e.target.email.value,
             password: e.target.password.value
         }
-        console.log("loginCredentials", loginCredentials)
+        console.log("hello")
         axios({
             method: "post",
-            url: `${endpoint}/login`,
+            url: `${API_ENDPOINT}/login`,
             data: loginCredentials
         })
         .then(res=>{
-            if(res.status) {
-                if(res.data === "User logged in successfully") {
-                    logIn(loginCredentials, "User");
-                    navigate('/profile');
-                } else if(res.data === "Librarian logged in successfully") {
-                    logIn(loginCredentials, "Librarian");
-                    navigate('/manage');
-                }
+            if(res.data==="User logged in successfully") {
+                login({ 
+                    email: loginCredentials.email, 
+                    role: "user" 
+                });
+                
+            } else if(res.data==="Librarian logged in successfully") {
+                login({ 
+                    email: loginCredentials.email, 
+                    role: "librarian" 
+                });
             }
         })
         .catch(err=>{
             if(err.response) {
                 console.log("Failed to log in: " + err.response.data);
                 setLogInErrorMessage(err.response.data);
-            }
-            else {
-                console.log("An error occured, please try again later " + err.message);
-                setLogInErrorMessage("An error occurred. Please try again.");
             }
         })
     }

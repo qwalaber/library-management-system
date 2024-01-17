@@ -1,27 +1,26 @@
 import React, { useContext } from "react";
 import { useNavigate } from 'react-router-dom';
 
-import { AuthContext } from "../assets/contexts/AuthContext";
+import { AuthContext } from "../contexts/AuthContext";
 
 const HomePage = () => {
 
-    const navigate = useNavigate();
-    
-    const { role } = useContext(AuthContext);
+    const { authUser } = useContext(AuthContext);
     const menuItems = ["Borrow", "Browse", "Manage"];
+    const navigate = useNavigate();
 
-    const handleRedirect = inputText => {
-        switch(inputText){
+    const handleRedirect = text => {
+        switch(text){
             case "Borrow":
-                if(role==="User") navigate("/books");
+                if(authUser.role==="user") navigate("/books");
                 else navigate("/login");
                 break;
             case "Browse":
                 navigate("/books");
                 break;
             case "Manage":
-                if(role==="Librarian") navigate("/manage");
-                else if(role==="User") navigate("/profile");
+                if(authUser.role==="librarian") navigate("/manage");
+                else if(authUser.role==="user") navigate("/profile");
                 else navigate("/login");
                 break;
             default: 
@@ -43,8 +42,8 @@ const HomePage = () => {
     </div>
     <div className="container pt-sm-3 pb-sm-3">
         <div className="row py-4 mt-2 mt-sm-4 pt-sm-5">
-            {menuItems.map(menuItem => 
-                <div className="col-sm-4 d-flex flex-column align-items-center">
+            {menuItems.map((menuItem, key) => 
+                <div className="col-sm-4 d-flex flex-column align-items-center" key={key}>
                     <img src={`images/homepage-${menuItem}.svg`} className="homepage-menu-image mt-4 mt-sm-0 mb-sm-3" alt="Bibliophile Image" onClick={()=>handleRedirect(`${menuItem}`)}/>
                     <h6 className="mt-4 mb-5 description-text">{menuItem}</h6>
                 </div>

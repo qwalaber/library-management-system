@@ -1,27 +1,20 @@
-import React, { useState, useEffect, useRef, useContext  } from "react";
-
-import axios from "axios";
+import React, { useRef, useState, useEffect } from "react";
 import { Tooltip } from "react-tooltip";
+import axios from "axios";
 import Masonry from 'react-masonry-css';
 
-import { AuthContext } from "../assets/contexts/AuthContext";
-import { API_ENDPOINT } from "../assets/configuration/config";
 import EditUserModal from "./modals/EditUserModal";
+import { API_ENDPOINT } from "../assets/configuration/config";
 
 const ManagePage = () => {
 
-  const { role } = useContext(AuthContext);
-
   const todayDate = new Date().setHours(0, 0, 0, 0);
-
   const tooltipRef = useRef(null);
-
   const masonryColumnBreakpoint = {
     default: 4,
     992: 2,
     768: 1
   };
-
   const [ users, setUsers ] = useState([]);
   const [ allUsers, setAllUsers ] = useState([]);
   const [ isEditUserMode, setIsEditUserMode ] = useState(false);
@@ -80,7 +73,6 @@ const ManagePage = () => {
       url: `${API_ENDPOINT}/users`
     })
     .then(res => {
-        console.log("fetched users: ",res.data);
         setAllUsers(res.data);
         setUsers(res.data);
     }) 

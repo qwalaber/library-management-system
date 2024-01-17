@@ -28,7 +28,7 @@ public class LoginController {
         try {
             return authenticationService.authenticateUser(loginRequest.get("email"), loginRequest.get("password"));
         } catch (Exception e) {
-            return ResponseEntity.status(401).body("Invalid credentials");
+            return ResponseEntity.status(401).body("Invalid credentials" + e.getMessage());
         }
     }
 }

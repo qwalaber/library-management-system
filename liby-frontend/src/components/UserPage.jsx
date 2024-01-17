@@ -1,21 +1,17 @@
-import React, { useState, useContext } from "react";
+import React, { useContext, useState } from "react";
 
 import TransactionsDataDummy from "../assets/data/TransactionsDataDummy";
 
-import { AuthContext } from "../assets/contexts/AuthContext";
 import { API_ENDPOINT } from "../assets/configuration/config";
+import { AuthContext } from "../contexts/AuthContext";
 
 const dummyActive = TransactionsDataDummy.filter(transaction => transaction.isReturned === false);
 const dummyAll = TransactionsDataDummy.filter(transaction => transaction.isReturned === true);
 
-const transactionsApi = "";
-
 const UserPage = () => {
 
+    const { authUser } = useContext(AuthContext);
     const todayDate = new Date().setHours(0, 0, 0, 0);
-    
-    const { user } = useContext(AuthContext);
-
     const [ activeTransactions, setActiveTransactions ] = useState(dummyActive);
     const [ allTransactions, setAllTransactions ] = useState(dummyAll);
 
@@ -38,12 +34,12 @@ const UserPage = () => {
         const year = date.getFullYear();
         
         return `${day} ${month} ${year}`;
-      }
+    }
 
     return(<div className="user-page">
         <div className="container">
             <div className="row" data-masonry='{"percentPosition": true }'>
-                <h3 className="text-center text-muted">Hi, {user.email}</h3>
+                <h3 className="text-center text-muted">Hi, {authUser.email}</h3>
                 <h6 className="mt-4">Current Books</h6>
                 { activeTransactions.map(transaction=>{
                     const dueDate = new Date(transaction.dueDate).setHours(0, 0, 0, 0);

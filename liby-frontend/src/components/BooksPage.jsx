@@ -2,16 +2,18 @@ import React, { useContext, useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { Tooltip } from 'react-tooltip';
 
-import { AuthContext } from '../assets/contexts/AuthContext';
+import { AuthContext } from '../contexts/AuthContext';
 import { API_ENDPOINT } from '../assets/configuration/config';
 import NewBookModal from './modals/NewBookModal';
 import EditBookModal from './modals/EditBookModal';
 
 const BooksPage = () => {
 
-    const sortOptions = ['Alphabetically', 'Relevance', 'Newest releases', 'Most borrowed'];
-    const { role, user } = useContext(AuthContext);
     const tooltipRef = useRef(null);
+
+    const sortOptions = ['Alphabetically', 'Relevance', 'Newest releases', 'Most borrowed'];
+
+    const { authUser } = useContext(AuthContext);
 
     const [ books, setBooks ] = useState([]);
     const [ allBooks, setAllBooks ] = useState([]);
@@ -75,7 +77,7 @@ const BooksPage = () => {
     const handleReservation = bookId => {
         const reservation = {
             bookId: bookId,
-            userEmail: user.email
+            userEmail: authUser.email
         }
         axios.post(`${API_ENDPOINT}/reservations`, reservation)
             .then(()=>{
@@ -93,7 +95,7 @@ const BooksPage = () => {
     const handleBorrow = bookId => {
         const borrow = {
             bookId: bookId,
-            userEmail: user.email
+            userEmail: authUser.email
         }
         axios.post(`${API_ENDPOINT}/borrows`, borrow)
             .then(()=>{
@@ -109,7 +111,8 @@ const BooksPage = () => {
     }
 
     const handleShowBookModal = book => {
-        if(role==="Librarian"){
+        console.log("yaho")
+        if(authUser && authUser.role==="librarian"){
             setSelectedBook(book);
             setIsEditBookMode(true);
         }
@@ -159,7 +162,7 @@ const BooksPage = () => {
                 </div>
                 <div className="col-sm-5 mb-3">
                     <span className="position-relative">
-                        <input type="text" className="text-center bg-info ps-sm-2 rounded-5 border-dark border-0" id="update-book-user-email-input" name="search-books" placeholder={`${role==="Librarian" ? `ID, ` : ``}Title or Author`} onChange={e=>handleActiveFilters('searchKeyword', e.target.value)}/>
+                        <input type="text" className="text-center bg-info ps-sm-2 rounded-5 border-dark border-0" id="update-book-user-email-input" name="search-books" placeholder={`${authUser && authUser.role==="librarian" ? `ID, ` : ``}Title or Author`} onChange={e=>handleActiveFilters('searchKeyword', e.target.value)}/>
                         <i className="fa fa-search position-absolute top-50 translate-middle-y end-0 me-2 text-muted text-white" aria-hidden="true"></i>
                     </span>
                 </div>
@@ -182,7 +185,7 @@ const BooksPage = () => {
             </div>
             <div className="row">
                 {books.map((book,i)=>{
-                    return<div key={i} className={`col-12 col-sm-6 col-md-4 ${role==="Librarian" ? `hover-pointer` : ``}`} onClick={()=>handleShowBookModal(book)}>
+                    return<div key={i} className={`col-12 col-sm-6 col-md-4 ${authUser && authUser.role==="librarian" ? `hover-pointer` : ``}`} onClick={()=>handleShowBookModal(book)}>
                         <div className="card mb-3 p-3">
                             <div className="row d-flex py-0">
                             <div className="col-7">
@@ -191,18 +194,18 @@ const BooksPage = () => {
                                 <span className="badge rounded-pill px-2 me-1 bg-primary">{book.subject}</span>
                                 <span className={`badge rounded-pill px-2 ${book.genre==="Non-fiction" ? `bg-secondary` : `bg-dark`}`}>{book.genre}</span>
                                 <p> 
-                                    { role !== "User" && book.availability ? 
+                                    { authUser ? authUser.role !== "user" && book.availability ? 
                                         <span className="badge border px-3 py-2 mt-1 border-success text-success">Available</span> 
-                                        : role !== "User" && !book.availability ? 
+                                        : authUser.role !== "user" && !book.availability ? 
                                         <span className="badge border px-3 py-2 mt-1 border-danger text-danger">Not Available</span> 
-                                        : role === "User" && book.availability ? 
+                                        : authUser.role === "user" && book.availability ? 
                                         <>
                                             <button className="btn btn-light btn-outline-dark me-1 mt-1" data-tooltip-id={`tooltip-borrow-${book.bookId}`}><i className="fa-brands fa-opencart"></i></button>
                                             <button className="btn btn-outline-success reserve-btn mt-1" data-tooltip-id={`tooltip-reserve-${book.bookId}`}>Reserve</button>
                                         </>
-                                        : role === "User" && !book.availability ? 
+                                        : authUser.role === "user" && !book.availability ? 
                                         <button className="btn btn-outline-danger me-2">Not available</button>
-                                        : null
+                                        : null : null
                                     }
                                 </p>
                                 <Tooltip id={`tooltip-reserve-${book.bookId}`} className={`${!book.isReturned ? `d-block` : `d-none` } tooltip-reserve`} delayShow={200} openEvents={{ click: true }} closeEvents={{ click: true }} globalCloseEvents={{ clickOutsideAnchor: true }} clickable={true}>
@@ -223,7 +226,7 @@ const BooksPage = () => {
                     </div>
                 </div>
                 })}
-                { role==="Librarian" ? <button className="btn btn-dark mt-1 mb-3" onClick={()=>setIsNewBookMode(true)}>Add Book</button> : null}
+                { authUser && authUser.role==="librarian" ? <button className="btn btn-dark mt-1 mb-3" onClick={()=>setIsNewBookMode(true)}>Add Book</button> : null}
             </div>
         </div>
         <EditBookModal isEditBookMode={isEditBookMode} setIsEditBookMode={setIsEditBookMode} book={selectedBook} API_ENDPOINT={API_ENDPOINT}/>
