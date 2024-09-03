@@ -83,7 +83,7 @@ const ManagePage = () => {
 
   return (<div className="manage-page bg-white" ref={tooltipRef}>
     <div className="container">
-      <h3 className="text-center text-muted mb-5">Customers</h3>
+      <h3 className="text-center text-muted my-3 mt-lg-0 mb-lg-5">Customers</h3>
       <div className="mb-4">
         <span className="position-relative">
           <input type="text" className="manage-searchbar ps-sm-2 rounded-4" id="update-book-user-email-input" name="search-books" placeholder="Book ID, Name or User ID" onChange={e=>searchUsers(e.target.value.toLowerCase())}/>

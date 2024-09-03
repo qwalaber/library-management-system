@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { Tooltip } from 'react-tooltip';
 
-import { AuthContext } from '../contexts/AuthContext';
+import { AuthContext } from '../assets/contexts/AuthContext';
 import { API_ENDPOINT } from '../assets/configuration/config';
 import NewBookModal from './modals/NewBookModal';
 import EditBookModal from './modals/EditBookModal';
@@ -95,9 +95,10 @@ const BooksPage = () => {
     const handleBorrow = bookId => {
         const borrow = {
             bookId: bookId,
+            userId: authUser.userId,
             userEmail: authUser.email
         }
-        axios.post(`${API_ENDPOINT}/borrows`, borrow)
+        axios.post(`${API_ENDPOINT}/transactions`, borrow)
             .then(()=>{
                 axios.get(`${API_ENDPOINT}/books`)
                     .then(res => setBooks(res.data)) 
@@ -141,7 +142,7 @@ const BooksPage = () => {
     return(<div className="books-page" ref={tooltipRef}>
         <div className="container">
             <div className="row">
-                <h3 className="text-center text-muted mb-5">Books</h3>
+                <h3 className="text-center text-muted my-3 mt-lg-0 mb-lg-5">Books</h3>
                 <div className="col-sm-4 mb-3">
                     <span>
                         <button className="btn btn-info w-100 p-0 rounded-2" onClick={()=>handleFilterOptionDisplay("Filter")}>
@@ -185,7 +186,7 @@ const BooksPage = () => {
             </div>
             <div className="row">
                 {books.map((book,i)=>{
-                    return<div key={i} className={`col-12 col-sm-6 col-md-4 ${authUser && authUser.role==="librarian" ? `hover-pointer` : ``}`} onClick={()=>handleShowBookModal(book)}>
+                    return<div key={i} className={`col-12 col-md-6 col-lg-4 ${authUser && authUser.role==="librarian" ? `hover-pointer` : ``}`} onClick={()=>handleShowBookModal(book)}>
                         <div className="card mb-3 p-3">
                             <div className="row d-flex py-0">
                             <div className="col-7">
@@ -217,7 +218,7 @@ const BooksPage = () => {
                                 <Tooltip id={`tooltip-borrow-${book.bookId}`} className={`${!book.isReturned ? `d-block` : `d-none` } tooltip-borrow`} delayShow={200} openEvents={{ click: true }} closeEvents={{ click: true }} globalCloseEvents={{ clickOutsideAnchor: true }} clickable={true}>
                                     <div className="text-center">
                                     <p>Would you like to Borrow this Book?</p>
-                                    <button className="tooltip-button btn border-success rounded-5 text-success" onMouseDown={()=>handleReservation(book.bookId)}><i className="fa fa-check"></i></button>
+                                    <button className="tooltip-button btn border-success rounded-5 text-success" onMouseDown={()=>handleBorrow(book.bookId)}><i className="fa fa-check"></i></button>
                                     </div>
                                 </Tooltip>
                             </div>

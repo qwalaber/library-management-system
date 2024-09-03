@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
 import './../App.scss';
 
-import { AuthContext } from "../contexts/AuthContext";
+import { AuthContext } from "../assets/contexts/AuthContext";
 
 const NavBar = () => {
 
@@ -15,7 +15,7 @@ const NavBar = () => {
 
     const logoNav = () => {
         return <NavLink className={`logo nav-item d-flex ${ isMobNavOpen ? `hide-item` : `show-item`} des-item`} to="/" onClick={()=>setIsMobNavOpen(!isMobNavOpen)}>
-            <span className="org-name ms-2 me-1">Libyy</span>
+            <span className="org-name ms-2 me-1">Liby</span>
             <i className="fa fa-book my-auto me-1" aria-hidden="true"></i>
         </NavLink>
     }
@@ -37,9 +37,13 @@ const NavBar = () => {
     }
 
     const userLogo = () => {
-        return <span className="profile-buffer nav-item hide-item des-item text-muted" data-tooltip-id="logout-tooltip">
+        return <span className="profile-buffer nav-item hide-item ${isMobNavOpen ? `show-item` : `hide-item`} des-item text-muted" data-tooltip-id="logout-tooltip">
         {authUser.email} <i className="fa fa-user" aria-hidden="true"></i>
     </span> 
+    }
+
+    const userEmailMobile = () => {
+        return <span className={`nav-item ${isMobNavOpen ? `show-item` : `hide-item`}`} data-tooltip-id="logout-tooltip"></span>
     }
 
     const librarianLogo = () => {
@@ -62,8 +66,8 @@ const NavBar = () => {
         <ul className="navbar-nav">
             {logoNav()} {homeNav()} {booksNav()}
             {authUser ? 
-            authUser.role === "user" ? <>{profileNav()} {userLogo()}</> 
-                :<>{manageNav()} {librarianLogo()}</> 
+            authUser.role === "user" ? <>{profileNav()} {userLogo()} {userEmailMobile()}</> 
+                :<>{manageNav()} {librarianLogo()} {userEmailMobile()}</> 
                 : loginNav()}
             <Tooltip id="logout-tooltip" openEvents={{ click: true }} closeEvents={{ click: true }} globalCloseEvents={{ clickOutsideAnchor: true }} clickable={true} className="bg-light text-dark border border-2 hover-pointer arrow">
                 <div onClick={()=>logout()}>Logout</div>

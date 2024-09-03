@@ -3,7 +3,7 @@ import React, { useContext, useState } from "react";
 import TransactionsDataDummy from "../assets/data/TransactionsDataDummy";
 
 import { API_ENDPOINT } from "../assets/configuration/config";
-import { AuthContext } from "../contexts/AuthContext";
+import { AuthContext } from "../assets/contexts/AuthContext";
 
 const dummyActive = TransactionsDataDummy.filter(transaction => transaction.isReturned === false);
 const dummyAll = TransactionsDataDummy.filter(transaction => transaction.isReturned === true);
@@ -23,7 +23,7 @@ const UserPage = () => {
             if (isOverdue) return <p className="mb-0">{-daysDue} days <br/> Overdue</p>;
             if (daysDue === 0) return <p className="mb-0">Due Today</p>;
             return <p className="mb-0">Due in <br/> {daysDue} days</p>
-        } return <p className="mb-0">Return on <br /> {formatReturnDate(date)}</p>
+        } return <p className="mb-0">Returned on <br /> {formatReturnDate(date)}</p>
     }
 
     const formatReturnDate = dateString => {
@@ -39,7 +39,7 @@ const UserPage = () => {
     return(<div className="user-page">
         <div className="container">
             <div className="row" data-masonry='{"percentPosition": true }'>
-                <h3 className="text-center text-muted">Hi, {authUser.email}</h3>
+                <h3 className="text-center text-muted my-3 mt-lg-0 mb-lg-5">Hi, {authUser.email}</h3>
                 <h6 className="mt-4">Current Books</h6>
                 { activeTransactions.map(transaction=>{
                     const dueDate = new Date(transaction.dueDate).setHours(0, 0, 0, 0);

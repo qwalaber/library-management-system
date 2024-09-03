@@ -3,7 +3,7 @@ import axios from "axios";
 
 import { API_ENDPOINT } from "../assets/configuration/config";
 import NewUserModal from "./modals/NewUserModal";
-import { AuthContext } from "../contexts/AuthContext";
+import { AuthContext } from "../assets/contexts/AuthContext";
 
 const LoginPage = () => {
 
@@ -49,7 +49,7 @@ const LoginPage = () => {
 
     return(<div className="login-page">
     <div className="container">
-        <div className="row flex-column">
+        <div className="row flex-column pb-2 pt-3 px-3 p-md-0">
             <div className="login-form-width col mx-auto justify-content-center align-items-center rounded-5 bg-light login-form-wrapper pt-4 pb-4">
                 <form onSubmit={e=>handleLogIn(e)} className="px-4 pt-1">
                     <div className="mb-2">

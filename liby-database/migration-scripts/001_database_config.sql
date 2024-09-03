@@ -38,7 +38,8 @@ CREATE TABLE Books (
     image_name VARCHAR(255) NOT NULL,
     availability BOOLEAN NOT NULL DEFAULT TRUE,
     total_borrows INT NOT NULL DEFAULT 0,
-    borrows_thirty_days INT NOT NULL DEFAULT 0
+    borrows_thirty_days INT NOT NULL DEFAULT 0,
+    deleted BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 CREATE TABLE Transactions (
@@ -48,9 +49,10 @@ CREATE TABLE Transactions (
     borrow_date DATE NOT NULL,
     due_date DATE AS (DATE_ADD(borrow_date, INTERVAL 14 DAY)) NOT NULL,
     return_date DATE DEFAULT NULL,
-    renewal BOOLEAN NOT NULL DEFAULT FALSE,
+    is_renewed BOOLEAN NOT NULL DEFAULT FALSE,
     librarian_id INT NOT NULL,
     return_librarian_id INT DEFAULT NULL,
+    overdue_days INT DEFAULT NULL,
     CONSTRAINT fk_user_id_transactions FOREIGN KEY (user_id) REFERENCES Users(user_id),
     CONSTRAINT fk_book_id_transactions FOREIGN KEY (book_id) REFERENCES Books(book_id),
     CONSTRAINT fk_librarian_id_transactions FOREIGN KEY (librarian_id) REFERENCES librarians(librarian_id),
